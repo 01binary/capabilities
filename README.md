@@ -2,6 +2,8 @@
 
 A small React and TypeScript design tool for creating technical capability graphics. It renders the chart as real SVG, supports live editing, and exports a standalone SVG file.
 
+![screenshot](./screenshot.png)
+
 ## Run It Locally
 
 These steps are for someone who has not used GitHub or a JavaScript project before.
