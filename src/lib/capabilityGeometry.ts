@@ -2,11 +2,21 @@ import type { CapabilitySkill, SkillDirection } from '../types/capability'
 
 export interface Point { x: number; y: number }
 
-export const GEOMETRY = { center: 350, minRadius: 42, maxRadius: 184, axisRadius: 216, sampleCount: 96 }
+export const GEOMETRY = { center: 350, minRadius: 34, maxRadius: 202, axisRadius: 232, sampleCount: 96 }
+const LOBE_STRENGTH = 0.32
 const directionAngles: Record<SkillDirection, number> = { up: -Math.PI / 2, right: 0, down: Math.PI / 2, left: Math.PI }
 
 function wrapAngle(angle: number): number { return ((angle + Math.PI) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2) - Math.PI }
 function smoothstep(t: number): number { return t * t * (3 - 2 * t) }
+function lobeBlend(t: number, currentRadius: number, nextRadius: number): number {
+  const eased = smoothstep(t)
+  // The stronger anchor should occupy a wider, softer lobe. Biasing the
+  // transition toward the weaker anchor creates a pulled water-drop profile
+  // while keeping a zero-slope join at every cardinal direction.
+  const strongerNext = nextRadius > currentRadius
+  const exponent = strongerNext ? 1 / (1 + LOBE_STRENGTH) : 1 + LOBE_STRENGTH
+  return Math.pow(eased, exponent)
+}
 function anchorRadius(value: number): number {
   // Area grows with radius squared, so sqrt(value / 100) makes a 40% region
   // roughly twice the area of a 20% region before the modest floor is added.
@@ -23,7 +33,7 @@ export function capabilityRadiusAtAngle(angle: number, skills: CapabilitySkill[]
     const currentAngle = current.angle < -Math.PI / 2 && index === 0 ? current.angle + Math.PI * 2 : current.angle
     const testAngle = normalizedAngle < currentAngle ? normalizedAngle + Math.PI * 2 : normalizedAngle
     if (testAngle >= currentAngle && testAngle <= nextAngle) {
-      const t = smoothstep((testAngle - currentAngle) / (nextAngle - currentAngle))
+      const t = lobeBlend((testAngle - currentAngle) / (nextAngle - currentAngle), current.radius, next.radius)
       return current.radius + (next.radius - current.radius) * t
     }
   }
