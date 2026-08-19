@@ -5,8 +5,8 @@ export const defaultChart: CapabilityChartData = {
   subtitle: 'Founder / Engineering',
   skills: [
     { id: 'mechanical', label: 'Mechanical Engineering', direction: 'up', value: 25, icon: 'settings' },
-    { id: 'electrical', label: 'Electrical Engineering', direction: 'right', value: 20, icon: 'circuit-board' },
-    { id: 'software', label: 'Software / Firmware', direction: 'down', value: 40, icon: 'code-2' },
+    { id: 'electrical', label: 'Electrical Engineering', direction: 'down', value: 20, icon: 'circuit-board' },
+    { id: 'software', label: 'Software / Firmware', direction: 'right', value: 40, icon: 'code-2' },
     { id: 'fabrication', label: 'Fabrication', direction: 'left', value: 15, icon: 'wrench' },
   ],
 }
